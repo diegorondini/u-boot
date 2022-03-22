@@ -35,3 +35,18 @@ def test_gpio_exit_statuses(u_boot_console):
     assert(expected_response in response)
     response = u_boot_console.run_command('gpio input 200; echo rc:$?')
     assert(expected_response in response)
+
+@pytest.mark.boardspec('sandbox')
+@pytest.mark.buildconfigspec('cmd_gpio')
+def test_gpio_read(u_boot_console):
+    """Test that gpio read correctly sets the variable to the value of a gpio pin."""
+
+    response = u_boot_console.run_command('gpio read var 0; echo val:$var')
+    expected_response = 'val:0'
+    assert(expected_response in response)
+    response = u_boot_console.run_command('gpio toggle 0; gpio read var 0; echo val:$var')
+    expected_response = 'val:1'
+    assert(expected_response in response)
+    response = u_boot_console.run_command('setenv var; gpio read var nonexistent-gpio; echo val:$var')
+    expected_response = 'val:'
+    assert(expected_response in response)
