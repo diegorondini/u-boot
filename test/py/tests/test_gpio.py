@@ -41,12 +41,12 @@ def test_gpio_exit_statuses(u_boot_console):
 def test_gpio_read(u_boot_console):
     """Test that gpio read correctly sets the variable to the value of a gpio pin."""
 
-    response = u_boot_console.run_command('gpio read var 0; echo val:$var')
-    expected_response = 'val:0'
+    response = u_boot_console.run_command('gpio read var 0; echo val:$var,rc:$?')
+    expected_response = 'val:0,rc:0'
     assert(expected_response in response)
-    response = u_boot_console.run_command('gpio toggle 0; gpio read var 0; echo val:$var')
-    expected_response = 'val:1'
+    response = u_boot_console.run_command('gpio toggle 0; gpio read var 0; echo val:$var,rc:$?')
+    expected_response = 'val:1,rc:0'
     assert(expected_response in response)
-    response = u_boot_console.run_command('setenv var; gpio read var nonexistent-gpio; echo val:$var')
-    expected_response = 'val:'
+    response = u_boot_console.run_command('setenv var; gpio read var nonexistent-gpio; echo val:$var,rc:$?')
+    expected_response = 'val:,rc:1'
     assert(expected_response in response)
